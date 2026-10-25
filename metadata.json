@@ -1,0 +1,6 @@
+{
+  "name": "Filee",
+  "description": "Offline multi-format file converter with smart routing, radial format selector, and batch processing inspired by KnifeLemon/Filee.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
