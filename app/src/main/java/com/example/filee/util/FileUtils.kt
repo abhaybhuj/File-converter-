@@ -103,4 +103,51 @@ object FileUtils {
             Toast.makeText(context, "No app found to open ${format.displayName}", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun saveToDownloads(
+        context: Context,
+        filePath: String,
+        targetFileName: String,
+        format: FileFormat
+    ): Boolean {
+        val srcFile = File(filePath)
+        if (!srcFile.exists()) {
+            Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                val values = android.content.ContentValues().apply {
+                    put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, targetFileName)
+                    put(android.provider.MediaStore.MediaColumns.MIME_TYPE, format.mimeType)
+                    put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_DOWNLOADS + "/Filee")
+                }
+                val resolver = context.contentResolver
+                val uri = resolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
+                if (uri != null) {
+                    resolver.openOutputStream(uri)?.use { out ->
+                        srcFile.inputStream().use { input ->
+                            input.copyTo(out)
+                        }
+                    }
+                    Toast.makeText(context, "Saved to Downloads/Filee: $targetFileName", Toast.LENGTH_LONG).show()
+                    true
+                } else {
+                    Toast.makeText(context, "Failed to create download file", Toast.LENGTH_SHORT).show()
+                    false
+                }
+            } else {
+                val downloadsDir = android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS)
+                val fileeDir = File(downloadsDir, "Filee").apply { mkdirs() }
+                val destFile = File(fileeDir, targetFileName)
+                srcFile.copyTo(destFile, overwrite = true)
+                Toast.makeText(context, "Saved to: ${destFile.absolutePath}", Toast.LENGTH_LONG).show()
+                true
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Download failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            false
+        }
+    }
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.InsertDriveFile
@@ -171,6 +172,10 @@ fun HistoryScreen(
                 items(historyRecords, key = { it.id }) { record ->
                     HistoryRecordCard(
                         record = record,
+                        onDownload = {
+                            val format = FileFormat.entries.firstOrNull { it.id == record.targetFormatId } ?: FileFormat.TXT
+                            FileUtils.saveToDownloads(context, record.outputPath, record.outputFileName, format)
+                        },
                         onShare = {
                             val format = FileFormat.entries.firstOrNull { it.id == record.targetFormatId } ?: FileFormat.TXT
                             FileUtils.shareFile(context, record.outputPath, format)
@@ -207,6 +212,7 @@ fun MetricColumn(title: String, value: String) {
 @Composable
 fun HistoryRecordCard(
     record: ConversionRecordEntity,
+    onDownload: () -> Unit = {},
     onShare: () -> Unit,
     onOpen: () -> Unit,
     onToggleFavorite: () -> Unit,
@@ -294,6 +300,14 @@ fun HistoryRecordCard(
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    IconButton(onClick = onDownload, modifier = Modifier.size(28.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "Download to Device",
+                            tint = FileeEmerald,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                     IconButton(onClick = onOpen, modifier = Modifier.size(28.dp)) {
                         Icon(
                             imageVector = Icons.Default.FileOpen,

@@ -383,6 +383,16 @@ fun ConvertScreen(
             Spacer(modifier = Modifier.height(16.dp))
             ConversionItemCard(
                 job = job,
+                onDownload = {
+                    if (job.resultFilePath != null) {
+                        FileUtils.saveToDownloads(
+                            context = context,
+                            filePath = job.resultFilePath,
+                            targetFileName = job.resultFileName ?: "converted.${job.targetFormat.extension}",
+                            format = job.targetFormat
+                        )
+                    }
+                },
                 onShare = {
                     if (job.resultFilePath != null) {
                         FileUtils.shareFile(context, job.resultFilePath, job.targetFormat)

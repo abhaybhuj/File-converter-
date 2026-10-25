@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.InsertDriveFile
@@ -58,6 +59,7 @@ import com.example.filee.util.FileUtils
 @Composable
 fun ConversionItemCard(
     job: ConversionJob,
+    onDownload: () -> Unit = {},
     onShare: () -> Unit,
     onOpen: () -> Unit,
     onRemove: () -> Unit,
@@ -207,15 +209,35 @@ fun ConversionItemCard(
 
                     Spacer(modifier = Modifier.height(10.dp))
 
-                    // Action buttons (Open & Share)
+                    // Action buttons (Download, Open & Share)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
+                        Button(
+                            onClick = onDownload,
+                            modifier = Modifier
+                                .weight(1.1f)
+                                .height(40.dp)
+                                .testTag("btn_download_${job.id}"),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = FileeEmerald,
+                                contentColor = Color(0xFF0F172A)
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Download,
+                                contentDescription = "Download",
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Download", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+
                         FilledTonalButton(
                             onClick = onOpen,
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(0.9f)
                                 .height(40.dp)
                                 .testTag("btn_open_${job.id}"),
                             colors = ButtonDefaults.filledTonalButtonColors(
@@ -228,19 +250,19 @@ fun ConversionItemCard(
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp)
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text("Open", fontSize = 12.sp)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Open", fontSize = 11.sp)
                         }
 
-                        Button(
+                        FilledTonalButton(
                             onClick = onShare,
                             modifier = Modifier
-                                .weight(1f)
+                                .weight(0.9f)
                                 .height(40.dp)
                                 .testTag("btn_share_${job.id}"),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = FileeCyan,
-                                contentColor = Color(0xFF0F172A)
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = FileeNavySurfaceVariant,
+                                contentColor = Color.White
                             )
                         ) {
                             Icon(
@@ -248,8 +270,8 @@ fun ConversionItemCard(
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp)
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text("Share", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Share", fontSize = 11.sp)
                         }
                     }
                 }

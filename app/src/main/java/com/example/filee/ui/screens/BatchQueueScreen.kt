@@ -260,6 +260,16 @@ fun BatchQueueScreen(
                 items(batchQueue, key = { it.id }) { job ->
                     ConversionItemCard(
                         job = job,
+                        onDownload = {
+                            if (job.resultFilePath != null) {
+                                FileUtils.saveToDownloads(
+                                    context = context,
+                                    filePath = job.resultFilePath,
+                                    targetFileName = job.resultFileName ?: "converted.${job.targetFormat.extension}",
+                                    format = job.targetFormat
+                                )
+                            }
+                        },
                         onShare = {
                             if (job.resultFilePath != null) {
                                 FileUtils.shareFile(context, job.resultFilePath, job.targetFormat)
